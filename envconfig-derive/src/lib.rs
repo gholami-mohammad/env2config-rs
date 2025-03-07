@@ -1,5 +1,5 @@
 use proc_macro::TokenStream;
-use quote::quote;
+use quote::{ToTokens, quote};
 use syn::{DeriveInput, parse_macro_input};
 
 #[proc_macro_derive(FromEnv, attributes(env))]
@@ -38,9 +38,25 @@ pub fn derive_from_env(input: TokenStream) -> TokenStream {
                         syn::Meta::Path(_p) => & quote! {},
                     };
 
+                    let ty: &syn::Type = &field.ty;
 
-                    quote! {
-                        #field_ident: std::env::var(#env_var).expect(&format!("Environment variable {} not set", #env_var))
+                    match  ty.to_token_stream().to_string().as_str(){
+                        "Vec < String >" => {
+                            quote! {
+                                #field_ident: std::env::var(#env_var)
+                                    .expect(&format!("Environment variable {} not set", #env_var))
+                                    .split(",")
+                                    .into_iter()
+                                    .map(|v| v.parse::<String>().expect("failed to parse"))
+                                    .collect::<#ty>()
+                            }
+                        },
+                        _ => {
+                            let tt = ty.to_token_stream().to_string();
+                            quote! {
+                                #field_ident: std::env::var(#env_var).expect(&format!("Environment variable {} not set {}", #env_var, #tt)).parse::<#ty>().expect("failed to parse data")
+                            }
+                        }
                     }
                 }
                 _ => {
