@@ -51,6 +51,16 @@ pub fn derive_from_env(input: TokenStream) -> TokenStream {
                                     .collect::<#ty>()
                             }
                         },
+                        "Vec < bool >" => {
+                            quote! {
+                                #field_ident: std::env::var(#env_var)
+                                    .expect(&format!("Environment variable {} not set", #env_var))
+                                    .split(",")
+                                    .into_iter()
+                                    .map(|v| v.parse::<bool>().expect("failed to parse"))
+                                    .collect::<#ty>()
+                            }
+                        },
                         "Vec < u8 >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
