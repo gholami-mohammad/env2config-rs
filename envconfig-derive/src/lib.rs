@@ -31,140 +31,211 @@ pub fn derive_from_env(input: TokenStream) -> TokenStream {
                         .find(|attr| attr.path().is_ident("env"))
                         .expect("Each field must have an #[env] attribute");
 
-
                     let env_var = match &env_attr.meta {
                         syn::Meta::List(l) => &l.tokens,
-                        syn::Meta::NameValue(_nv) => & quote! {},
-                        syn::Meta::Path(_p) => & quote! {},
+                        syn::Meta::NameValue(_nv) => &quote! {},
+                        syn::Meta::Path(_p) => &quote! {},
                     };
 
                     let ty: &syn::Type = &field.ty;
 
-                    match  ty.to_token_stream().to_string().as_str(){
+                    match ty.to_token_stream().to_string().as_str() {
                         "Vec < String >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .expect(&format!("Environment variable {} not set", #env_var))
+                                    .unwrap_or_default()
                                     .split(",")
                                     .into_iter()
                                     .map(|v| v.parse::<String>().expect("failed to parse"))
                                     .collect::<#ty>()
                             }
-                        },
+                        }
                         "Vec < bool >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .expect(&format!("Environment variable {} not set", #env_var))
+                                    .unwrap_or("false".to_string())
                                     .split(",")
                                     .into_iter()
                                     .map(|v| v.parse::<bool>().expect("failed to parse"))
                                     .collect::<#ty>()
                             }
-                        },
+                        }
                         "Vec < u8 >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .expect(&format!("Environment variable {} not set", #env_var))
+                                    .unwrap_or_default()
                                     .split(",")
                                     .into_iter()
-                                    .map(|v| v.parse::<u8>().expect("failed to parse"))
+                                    .map(|v| {
+                                        if v == "" {
+                                            return 0;
+                                        }
+
+                                        return v.parse::<u8>().expect("failed to parse");
+                                    })
                                     .collect::<#ty>()
                             }
-                        },
+                        }
                         "Vec < u16 >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .expect(&format!("Environment variable {} not set", #env_var))
+                                    .unwrap_or_default()
                                     .split(",")
                                     .into_iter()
-                                    .map(|v| v.parse::<u16>().expect("failed to parse"))
+                                    .map(|v| {
+                                        if v == "" {
+                                            return 0;
+                                        }
+
+                                        return v.parse::<u16>().expect("failed to parse");
+                                    })
                                     .collect::<#ty>()
                             }
-                        },
+                        }
                         "Vec < u32 >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .expect(&format!("Environment variable {} not set", #env_var))
+                                    .unwrap_or_default()
                                     .split(",")
                                     .into_iter()
-                                    .map(|v| v.parse::<u32>().expect("failed to parse"))
+                                    .map(|v| {
+                                        if v == "" {
+                                            return 0;
+                                        }
+
+                                        return v.parse::<u32>().expect("failed to parse");
+                                    })
                                     .collect::<#ty>()
                             }
-                        },
+                        }
                         "Vec < u64 >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .expect(&format!("Environment variable {} not set", #env_var))
+                                    .unwrap_or_default()
                                     .split(",")
                                     .into_iter()
-                                    .map(|v| v.parse::<u64>().expect("failed to parse"))
+                                    .map(|v| {
+                                        if v == "" {
+                                            return 0;
+                                        }
+
+                                        return v.parse::<u64>().expect("failed to parse");
+                                    })
                                     .collect::<#ty>()
                             }
-                        },
+                        }
                         "Vec < u128 >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .expect(&format!("Environment variable {} not set", #env_var))
+                                    .unwrap_or_default()
                                     .split(",")
                                     .into_iter()
-                                    .map(|v| v.parse::<u128>().expect("failed to parse"))
+                                    .map(|v| {
+                                        if v == "" {
+                                            return 0;
+                                        }
+
+                                        return v.parse::<u128>().expect("failed to parse");
+                                    })
                                     .collect::<#ty>()
                             }
-                        },
+                        }
                         "Vec < i8 >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .expect(&format!("Environment variable {} not set", #env_var))
+                                    .unwrap_or_default()
                                     .split(",")
                                     .into_iter()
-                                    .map(|v| v.parse::<i8>().expect("failed to parse"))
+                                    .map(|v| {
+                                        if v == "" {
+                                            return 0;
+                                        }
+
+                                        return v.parse::<i8>().expect("failed to parse");
+                                    })
                                     .collect::<#ty>()
                             }
-                        },
+                        }
                         "Vec < i16 >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .expect(&format!("Environment variable {} not set", #env_var))
+                                    .unwrap_or_default()
                                     .split(",")
                                     .into_iter()
-                                    .map(|v| v.parse::<i16>().expect("failed to parse"))
+                                    .map(|v| {
+                                        if v == "" {
+                                            return 0;
+                                        }
+
+                                        return v.parse::<i16>().expect("failed to parse");
+                                    })
                                     .collect::<#ty>()
                             }
-                        },
+                        }
                         "Vec < i32 >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .expect(&format!("Environment variable {} not set", #env_var))
+                                    .unwrap_or_default()
                                     .split(",")
                                     .into_iter()
-                                    .map(|v| v.parse::<i32>().expect("failed to parse"))
+                                    .map(|v| {
+                                        if v == "" {
+                                            return 0;
+                                        }
+
+                                        return v.parse::<i32>().expect("failed to parse");
+                                    })
                                     .collect::<#ty>()
                             }
-                        },
+                        }
                         "Vec < i64 >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .expect(&format!("Environment variable {} not set", #env_var))
+                                    .unwrap_or_default()
                                     .split(",")
                                     .into_iter()
-                                    .map(|v| v.parse::<i64>().expect("failed to parse"))
+                                    .map(|v| {
+                                        if v == "" {
+                                            return 0;
+                                        }
+
+                                        return v.parse::<i64>().expect("failed to parse");
+                                    })
                                     .collect::<#ty>()
                             }
-                        },
+                        }
                         "Vec < i128 >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .expect(&format!("Environment variable {} not set", #env_var))
+                                    .unwrap_or_default()
                                     .split(",")
                                     .into_iter()
-                                    .map(|v| v.parse::<i128>().expect("failed to parse"))
+                                    .map(|v| {
+                                        if v == "" {
+                                            return 0;
+                                        }
+
+                                        return v.parse::<i128>().expect("failed to parse");
+                                    })
                                     .collect::<#ty>()
                             }
-                        },
+                        }
+                        "bool" => {
+                            let tt = ty.to_token_stream().to_string();
+                            quote! {
+                                #field_ident: std::env::var(#env_var)
+                                    .unwrap_or("false".to_string())
+                                    .parse::<#ty>()
+                                    .expect("failed to parse data")
+                            }
+                        }
                         _ => {
                             let tt = ty.to_token_stream().to_string();
                             quote! {
-                                #field_ident: std::env::var(#env_var).expect(&format!("Environment variable {} not set {}", #env_var, #tt)).parse::<#ty>().expect("failed to parse data")
+                                #field_ident: std::env::var(#env_var)
+                                    .unwrap_or_default()
+                                    .parse::<#ty>()
+                                    .expect("failed to parse data")
                             }
                         }
                     }
