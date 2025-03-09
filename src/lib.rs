@@ -14,6 +14,8 @@
 /// struct Config {
 ///     #[env("DATABASE_URL")]
 ///     database_url: String,
+///     #[env("HOST", "127.0.01")] // HOST is env variable name and 127.0.01 is default value if HOST is not provided
+///     database_url: String,
 /// }
 ///
 /// fn main() {

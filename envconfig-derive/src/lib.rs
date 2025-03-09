@@ -31,11 +31,32 @@ pub fn derive_from_env(input: TokenStream) -> TokenStream {
                         .find(|attr| attr.path().is_ident("env"))
                         .expect("Each field must have an #[env] attribute");
 
-                    let env_var = match &env_attr.meta {
-                        syn::Meta::List(l) => &l.tokens,
-                        syn::Meta::NameValue(_nv) => &quote! {},
-                        syn::Meta::Path(_p) => &quote! {},
+                    let params_token = match &env_attr.meta {
+                        syn::Meta::List(l) => Some(
+                            l.tokens
+                                .clone()
+                                .into_iter()
+                                .filter(|t| t.to_string() != ",")
+                                .map(|tt| quote! {#tt})
+                                .collect::<Vec<_>>(),
+                        ),
+                        syn::Meta::NameValue(_nv) => None,
+                        syn::Meta::Path(_p) => None,
                     };
+
+                    if params_token.is_none() {
+                        panic!("no valid parameter applied to env attribute");
+                    }
+                    let params_token = params_token.unwrap();
+                    if params_token.len() == 0 {
+                        panic!("no parameter passed to env attribute");
+                    }
+
+                    let env_var = &params_token[0];
+                    let mut default_value = &quote! {""};
+                    if params_token.len() >= 2 {
+                        default_value = &params_token[1];
+                    }
 
                     let ty: &syn::Type = &field.ty;
 
@@ -220,22 +241,13 @@ pub fn derive_from_env(input: TokenStream) -> TokenStream {
                                     .collect::<#ty>()
                             }
                         }
-                        "bool" => {
-                            let tt = ty.to_token_stream().to_string();
-                            quote! {
-                                #field_ident: std::env::var(#env_var)
-                                    .unwrap_or("false".to_string())
-                                    .parse::<#ty>()
-                                    .expect("failed to parse data")
-                            }
-                        }
                         _ => {
-                            let tt = ty.to_token_stream().to_string();
+                            // let tt = ty.to_token_stream().to_string();
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .unwrap_or_default()
+                                    .unwrap_or(String::from(#default_value))
                                     .parse::<#ty>()
-                                    .expect("failed to parse data")
+                                    .unwrap_or(Default::default())
                             }
                         }
                     }
