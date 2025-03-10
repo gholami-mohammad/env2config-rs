@@ -6,7 +6,7 @@ authors = ["Mohammad Gholami <gholami.mohammad.mgh@gmail.com>"]
 description = "Load environment variables into structs"
 license = "MIT"
 repository = "https://github.com/gholami-mohammad/env2config-rs"
-keywords = ["env", "config", "env to config"]
+keywords = ["env", "config", "env2config"]
 
 [dependencies]
 env2config_derive = { path = "./env2config_derive", version = "1.0.0" }
