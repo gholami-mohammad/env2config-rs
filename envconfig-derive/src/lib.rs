@@ -57,6 +57,7 @@ pub fn derive_from_env(input: TokenStream) -> TokenStream {
                     if params_token.len() >= 2 {
                         default_value = &params_token[1];
                     }
+                    println!("DDD{}", default_value);
 
                     let ty: &syn::Type = &field.ty;
 
@@ -64,7 +65,7 @@ pub fn derive_from_env(input: TokenStream) -> TokenStream {
                         "Vec < String >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .unwrap_or_default()
+                                    .unwrap_or(String::from(#default_value))
                                     .split(",")
                                     .into_iter()
                                     .map(|v| v.parse::<String>().expect("failed to parse"))
@@ -84,7 +85,7 @@ pub fn derive_from_env(input: TokenStream) -> TokenStream {
                         "Vec < u8 >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .unwrap_or_default()
+                                    .unwrap_or(String::from(#default_value))
                                     .split(",")
                                     .into_iter()
                                     .map(|v| {
@@ -100,7 +101,7 @@ pub fn derive_from_env(input: TokenStream) -> TokenStream {
                         "Vec < u16 >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .unwrap_or_default()
+                                    .unwrap_or(String::from(#default_value))
                                     .split(",")
                                     .into_iter()
                                     .map(|v| {
@@ -116,7 +117,7 @@ pub fn derive_from_env(input: TokenStream) -> TokenStream {
                         "Vec < u32 >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .unwrap_or_default()
+                                    .unwrap_or(String::from(#default_value))
                                     .split(",")
                                     .into_iter()
                                     .map(|v| {
@@ -132,7 +133,7 @@ pub fn derive_from_env(input: TokenStream) -> TokenStream {
                         "Vec < u64 >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .unwrap_or_default()
+                                    .unwrap_or(String::from(#default_value))
                                     .split(",")
                                     .into_iter()
                                     .map(|v| {
@@ -148,7 +149,7 @@ pub fn derive_from_env(input: TokenStream) -> TokenStream {
                         "Vec < u128 >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .unwrap_or_default()
+                                    .unwrap_or(String::from(#default_value))
                                     .split(",")
                                     .into_iter()
                                     .map(|v| {
@@ -164,7 +165,7 @@ pub fn derive_from_env(input: TokenStream) -> TokenStream {
                         "Vec < i8 >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .unwrap_or_default()
+                                    .unwrap_or(String::from(#default_value))
                                     .split(",")
                                     .into_iter()
                                     .map(|v| {
@@ -180,7 +181,7 @@ pub fn derive_from_env(input: TokenStream) -> TokenStream {
                         "Vec < i16 >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .unwrap_or_default()
+                                    .unwrap_or(String::from(#default_value))
                                     .split(",")
                                     .into_iter()
                                     .map(|v| {
@@ -196,7 +197,7 @@ pub fn derive_from_env(input: TokenStream) -> TokenStream {
                         "Vec < i32 >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .unwrap_or_default()
+                                    .unwrap_or(String::from(#default_value))
                                     .split(",")
                                     .into_iter()
                                     .map(|v| {
@@ -212,7 +213,7 @@ pub fn derive_from_env(input: TokenStream) -> TokenStream {
                         "Vec < i64 >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .unwrap_or_default()
+                                    .unwrap_or(String::from(#default_value))
                                     .split(",")
                                     .into_iter()
                                     .map(|v| {
@@ -228,7 +229,7 @@ pub fn derive_from_env(input: TokenStream) -> TokenStream {
                         "Vec < i128 >" => {
                             quote! {
                                 #field_ident: std::env::var(#env_var)
-                                    .unwrap_or_default()
+                                    .unwrap_or(String::from(#default_value))
                                     .split(",")
                                     .into_iter()
                                     .map(|v| {
