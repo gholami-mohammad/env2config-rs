@@ -14,7 +14,7 @@ Add `env2config` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-env2config = "1.0.0"
+env2config = "1.0.1"
 ```
 
 ```rust
