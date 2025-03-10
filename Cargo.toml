@@ -9,4 +9,4 @@ repository = "https://github.com/gholami-mohammad/env2config-rs"
 keywords = ["env", "config", "env to config"]
 
 [dependencies]
-env2config_derive = { path = "./env2config_derive" }
+env2config_derive = { path = "./env2config_derive", version = "1.0.0" }
