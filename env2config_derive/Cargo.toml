@@ -1,10 +1,16 @@
 [package]
-name = "env2config"
+name = "env2config_derive"
 version = "1.0.0"
 edition = "2024"
 authors = ["Mohammad Gholami <gholami.mohammad.mgh@gmail.com>"]
 description = "Load environment variables into structs"
 license = "MIT"
 
+
+[lib]
+proc-macro = true
+
 [dependencies]
-env2config_derive = { path = "./env2config_derive" }
+quote = "1"
+syn = { version = "2", features = ["full"] }
+proc-macro2 = { version = "1.0", features = [] }

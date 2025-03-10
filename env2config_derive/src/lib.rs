@@ -57,8 +57,6 @@ pub fn derive_from_env(input: TokenStream) -> TokenStream {
                     if params_token.len() >= 2 {
                         default_value = &params_token[1];
                     }
-                    println!("DDD{}", default_value);
-
                     let ty: &syn::Type = &field.ty;
 
                     match ty.to_token_stream().to_string().as_str() {
@@ -266,7 +264,7 @@ pub fn derive_from_env(input: TokenStream) -> TokenStream {
     // Generate the trait implementation
     let expanded = quote! {
         // The generated impl.
-        impl envconfig::FromEnv for #struct_name {
+        impl env2config::FromEnv for #struct_name {
             fn from_env() -> Self {
                 Self {
                     #(#field_inits),* // Expand the list of field initializations
