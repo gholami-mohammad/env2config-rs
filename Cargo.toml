@@ -1,6 +1,6 @@
 [package]
 name = "env2config"
-version = "1.0.1"
+version = "1.0.2"
 edition = "2024"
 authors = ["Mohammad Gholami <gholami.mohammad.mgh@gmail.com>"]
 description = "Load environment variables into structs"

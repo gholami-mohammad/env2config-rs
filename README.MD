@@ -14,11 +14,12 @@ Add `env2config` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-env2config = "1.0.1"
+env2config = "1.0.2"
 ```
 
 ```rust
 use env2config::FromEnv;
+use std::env::set_var;
 
 #[derive(FromEnv)]
 struct Config {
@@ -28,19 +29,32 @@ struct Config {
     #[env("HOST", "127.0.0.1")] // HOST is env variable name and 127.0.0.1 is default value if HOST is not provided
     host: String,
 
-    #[env("PORT", "8080")]
-    port: u16,
+    #[env("PORT")]
+    port: i32,
 
-    #[env("DEBUG", "false")]
-    debug: bool,
+    // loading comma separated values into vectors of these types:
+    // String, bool, u8, u16, u32, u64, u128, i8, i16, i32, i64, i128
+    #[env("IDS", "1,2,3")]
+    ids: Vec<i32>,
+
+    #[env("SYMBOLS")]
+    symbols: Vec<String>,
 }
 
 fn main() {
+    unsafe {
+        set_var("PORT", "5544");
+        set_var("SYMBOLS", "A,B,C");
+    }
     let cfg = Config::from_env();
-    println!("Database URL: {}", cfg.database_url);
-    println!("Host: {}", cfg.host);
-    println!("Port: {}", cfg.port);
-    println!("Debug: {}", cfg.debug);
+    assert_eq!(cfg.host, "127.0.0.1");
+    assert_eq!(cfg.port, 5544);
+    assert_eq!(cfg.ids.len(), 3);
+    assert_eq!(cfg.ids[0], 1);
+    assert_eq!(cfg.symbols.len(), 3);
+    assert_eq!(cfg.symbols[0], "A");
+    assert_eq!(cfg.symbols[1], "B");
+    assert_eq!(cfg.symbols[2], "C");
 }
 ```
 
